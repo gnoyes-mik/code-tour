@@ -29,9 +29,15 @@ ALWAYS use this exact format with ANSI colors and Unicode box characters for eac
  │  💬 Parses JWT token and retrieves user from DB. │
  │                                                  │
  │  ❶ jwtParser.parse()    ❷ userRepo.findById()   │
+ ├──────────────────────────────────────────────────┤
+ │  1:prev  2:next  3:drill  4:quit                │
  ╰──────────────────────────────────────────────────╯
-   ← prev     next →     ❶❷ drill     q quit
 ```
+
+**IMPORTANT**:
+- Do NOT add any usage instructions or explanations below the box
+- The navigation bar inside the box is self-explanatory
+- Just show the box and wait for user input
 
 ## Color Scheme (ANSI)
 
@@ -91,10 +97,10 @@ Reset with `\033[0m` after each colored segment.
 
 ### Navigation Bar
 ```
-   ← prev     next →     ❶❷ drill     q quit
+ │  1:prev  2:next  3:drill  4:quit                │
 ```
-- Subtle, unobtrusive at bottom
-- Outside the box
+- Inside the box, bottom row
+- Simple numbered controls
 
 ## Interaction Handling
 
@@ -102,12 +108,11 @@ Listen for these inputs and respond accordingly:
 
 | Input | Action |
 |-------|--------|
-| `1`, `prev`, `previous`, `이전`, `p`, `←` | Go to previous step |
-| `2`, `next`, `다음`, `n`, `→` | Go to next step |
-| `❶`, `1)`, `a` | Drill into first marked function |
-| `❷`, `2)`, `b` | Drill into second marked function |
-| Function name (e.g., "parse") | Drill into that function |
-| `q`, `quit`, `exit`, `종료` | Exit the tour |
+| `1` | Go to previous step |
+| `2` | Go to next step |
+| `3` | Show drill-down options, then user picks ❶❷❸ or function name |
+| `4` | Exit the tour |
+| `❶`, `❷`, `❸` or function name | Drill into that function |
 | Natural language question | Answer within tour context |
 
 ## Finding Entry Points

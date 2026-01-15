@@ -6,7 +6,10 @@
   "plugins": [
     {
       "name": "code-tour",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "gnoyes-mik/code-tour"
+      },
       "description": "Interactive code explorer - navigate your codebase like a debugger",
       "version": "1.0.0"
     }

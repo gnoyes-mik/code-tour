@@ -25,7 +25,7 @@ ALWAYS use this exact format with **minimap** showing current position:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/service/AuthService.java#L42**
+**src/service/AuthService.java:42**
 
 ```
   login() - 로그인 엔트리포인트
@@ -75,7 +75,7 @@ Then navigation bar:
 - Navigation bar shows [0] back first, then all drill options with function names, then [q] quit
 - Header and explanation MUST be **bold** (outside code blocks for rendering)
 - Write explanations in the USER'S LANGUAGE (Korean if user speaks Korean, etc.)
-- File links MUST use `#L` format: `src/File.java#L120` (clickable in IDE)
+- File links MUST use colon format: `src/File.java:120` (clickable in Claude Code terminal)
 - Do NOT use emojis
 - Just show the display and wait for user input
 
@@ -85,10 +85,10 @@ Then navigation bar:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/auth/AuthService.java#L120**
+**src/auth/AuthService.java:120**
 
 - Long separator line (━)
-- **Bold** file path with line number (clickable link format)
+- **Bold** file path with line number (colon format for Claude Code clickability)
 
 ### Minimap
 ```
@@ -175,7 +175,7 @@ When user presses "0" (back):
 ## Finding Entry Points
 
 ### If target is provided:
-- If it looks like `file:line` or `file#L` → Start from that location
+- If it looks like `file:line` → Start from that location
 - If it looks like a function name → Search and start from that function
 - If it's a feature description → Search codebase for likely entry point
 
@@ -275,7 +275,7 @@ When user quits:
 Explored 5 functions across 3 files
 Deepest level: 3
 
-Resume: /tour src/auth/AuthService.java#L120
+Resume: /tour src/auth/AuthService.java:120
 
 ## Performance Optimization
 
@@ -287,7 +287,7 @@ When displaying a function, **pre-read all drillable functions** in advance:
 
 1. **No emojis** - Keep output clean and professional
 2. **User's language** - Write explanations in user's language
-3. **Clickable links** - Use `file#L123` format for IDE integration
+3. **Clickable links** - Use `file:123` format for Claude Code terminal clickability
 4. **Be concise** - Explanations should be 1-2 sentences max
 5. **Show entire function** - Don't truncate, show full function body
 6. **Mark ALL callables** - Every function call should be marked [a], [b], [c]...

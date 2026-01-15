@@ -11,7 +11,7 @@ Code Tour is a Claude Code plugin that lets you explore code by drilling into fu
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/service/AuthService.java#L42**
+**src/service/AuthService.java:42**
 
 ```
   login() - Login entry point
@@ -60,7 +60,7 @@ Code Tour is a Claude Code plugin that lets you explore code by drilling into fu
 /tour login feature
 
 # Start from specific location
-/tour src/auth/AuthService.java#L45
+/tour src/auth/AuthService.java:45
 
 # Natural language
 Show me the payment flow as a code tour
@@ -96,7 +96,7 @@ Ask questions during the tour:
 - "What happens if this fails?"
 
 ### IDE Integration
-Click on `file#L123` links to open in your connected IDE.
+Click on `file:123` links to open in your connected IDE.
 
 ### Smart Handling
 - **Branch points**: All branches shown as drill options
@@ -126,7 +126,7 @@ The skill activates on these phrases:
 
 | Command | Description |
 |---------|-------------|
-| `/tour <target>` | Start tour from target (file#L, function, or feature) |
+| `/tour <target>` | Start tour from target (file:, function, or feature) |
 | `/tour` | Interactive prompt to choose starting point |
 
 ## Navigation

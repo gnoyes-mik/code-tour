@@ -45,7 +45,7 @@ This is NOT a step-by-step debugger. It's **tree navigation**:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/service/AuthService.java#L42**
+**src/service/AuthService.java:42**
 
 ```
   login() - 로그인 엔트리포인트

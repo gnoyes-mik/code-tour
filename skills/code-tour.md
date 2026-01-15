@@ -1,6 +1,6 @@
 ---
 name: code-tour
-description: Use when user wants to explore code flow interactively, or after implementation to show what was built. Triggers on phrases like "show me the flow", "code tour", "walk me through", "코드 투어", "흐름 보여줘"
+description: Use when user wants to explore code flow interactively. Triggers on phrases like "show me the flow", "code tour", "walk me through", "explain the code", "코드 투어", "흐름 보여줘", "흐름 알려줘", "코드 설명해줘"
 ---
 
 # Code Tour Skill
@@ -9,14 +9,19 @@ This skill provides interactive code exploration, like stepping through a debugg
 
 ## When to Use
 
-Activate this skill when:
-- User says "show me the flow of X"
-- User says "walk me through X"
-- User says "code tour of X"
-- User says "X 흐름 보여줘"
-- User says "코드 투어로 보여줘"
+Activate this skill when user says:
+- "show me the flow of X"
+- "walk me through X"
+- "code tour of X"
+- "explain how X works"
+- "X 흐름 보여줘"
+- "X 흐름 알려줘"
+- "코드 투어로 보여줘"
+- "X 코드 설명해줘"
+- "X는 어떻게 동작해?"
 - After implementing a feature, to show what was built
 - When explaining complex code paths
+- When user asks "how does this work?"
 
 ## How to Execute
 
@@ -36,8 +41,8 @@ When completing a feature implementation, offer a code tour:
 ```
 Implementation complete! Would you like a code tour of what was built?
 
-[1] Yes, show me the flow
-[2] No, I'm good
+[a] Yes, show me the flow
+[b] No, I'm good
 ```
 
 If yes, start tour from the main entry point of the implemented feature.
@@ -61,47 +66,35 @@ The error originates here. Want to tour through the call stack?
 Follow the exact format specified in the tour.md command:
 
 ```
-┌─────────────────────────────────────────────────┐
-│ [step/total] file:line                          │
-│ ───────────────────────────────────────────────│
-│  (code with [a], [b] markers)                   │
-│                                                 │
-│  (brief explanation)                            │
-├─────────────────────────────────────────────────┤
-│ [1] ← prev  [2] next →  [3] drill  [q] quit    │
-└─────────────────────────────────────────────────┘
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+**[1/4] src/controllers/AuthController.java#L25**
+
+```java
+   23 │ @PostMapping("/login")
+   24 │ public Response login(@RequestBody Creds creds) {
+ > 25 │   User user = [a]authService.authenticate(creds);
+   26 │   return [b]tokenService.generate(user);
+   27 │ }
+```
+
+**Entry point for login. Authenticates user and generates JWT token.**
+
+```
+  [a] authService.authenticate()    [b] tokenService.generate()
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1 prev | 2 next | 3 drill | 4 quit
 ```
 
 ## Key Behaviors
 
 1. **Start from entry point** - Find the logical starting point for the feature
 2. **Follow execution flow** - Step through code as it would execute
-3. **Mark callable functions** - Use [a], [b] etc. for drill-down options
-4. **Handle branches** - Let user choose path at if/switch statements
-5. **Track depth** - Manage drill-down stack properly
-6. **Answer questions** - Respond to natural language queries in context
-
-## Example Invocation
-
-User: "I just implemented user authentication. Show me the flow."
-
-Response:
-```
-Starting code tour of user authentication flow...
-
-┌─────────────────────────────────────────────────┐
-│ [1/4] src/controllers/AuthController.java:25    │
-│ ───────────────────────────────────────────────│
-│  23 │ @PostMapping("/login")                    │
-│  24 │ public Response login(@RequestBody Creds) │
-│  25 │ →   User user = [a]authService.           │
-│  26 │         authenticate(creds);              │
-│  27 │   return [b]tokenService.generate(user);  │
-│  28 │ }                                         │
-│                                                 │
-│ Entry point for login. Authenticates user and  │
-│ generates JWT token.                            │
-├─────────────────────────────────────────────────┤
-│ [1] ← prev  [2] next →  [3] drill  [q] quit    │
-└─────────────────────────────────────────────────┘
-```
+3. **Show entire function** - Don't truncate, show full function body
+4. **Mark callable functions** - Use [a], [b] etc. for drill-down options
+5. **Handle branches** - Let user choose path at if/switch statements
+6. **Track depth** - Manage drill-down stack properly
+7. **Answer questions** - Respond to natural language queries in context
+8. **Pre-read** - Pre-read next/prev steps for fast navigation
+9. **User's language** - Write explanations in user's language
+10. **No emojis** - Keep output clean and professional

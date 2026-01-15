@@ -44,6 +44,7 @@ Then continue with:
 - Wrap source code in markdown code block with language (```java, ```python, ```typescript, etc.)
 - This enables syntax highlighting in the terminal
 - Keep [a], [b] markers inline as comments or after the line
+- Light reformatting OK for readability, but minimize line breaks
 - Do NOT add any usage instructions below
 - Just show the display and wait for user input
 

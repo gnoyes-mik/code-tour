@@ -20,39 +20,58 @@ This is NOT a step-by-step debugger. Instead, it's a **tree navigation**:
 
 ## Display Format
 
-ALWAYS use this exact format:
+ALWAYS use this exact format with **minimap** showing current position:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/auth/AuthService.java#L120**
+**src/service/AuthService.java#L42**
+
+```
+  login() - 로그인 엔트리포인트
+  └─ authService.authenticate() ← 현재 위치
+     ├─[a] userRepository.findByEmail() - 이메일로 사용자 조회
+     ├─[b] passwordEncoder.matches() - 비밀번호 검증
+     └─[c] mfaService.verify() - MFA 검증
+```
+```
+──────────────────────────────────────────────────────────────────────
+```
 
 Then show the code in a MARKDOWN CODE BLOCK with the appropriate language.
 Show the ENTIRE function:
 
 ```java
-   119 │   public User validateToken(String token) {
-   120 │     TokenPayload payload = [a]jwtParser.parse(token);
-   121 │     User user = [b]userRepo.findById(payload.getUserId());
-   122 │     [c]auditLog.record(user, "token_validated");
-   123 │     return user;
-   124 │   }
+   40 │   public User authenticate(Credentials credentials) {
+   41 │     User user = [a]userRepository.findByEmail(credentials.getEmail());
+   42 │     if (user == null) {
+   43 │       throw new AuthException("User not found");
+   44 │     }
+   45 │     if (![b]passwordEncoder.matches(credentials.getPassword(), user.getHash())) {
+   46 │       throw new AuthException("Invalid password");
+   47 │     }
+   48 │     if (user.isMfaEnabled()) {
+   49 │       [c]mfaService.verify(user, credentials.getMfaCode());
+   50 │     }
+   51 │     return user;
+   52 │   }
 ```
 
 Then show explanation in **bold** (outside code block):
 
-**JWT 토큰을 파싱하고 사용자를 조회한 뒤 감사 로그를 기록합니다.**
+**사용자 인증 로직. 이메일로 사용자를 찾고, 비밀번호 검증 후 MFA가 활성화되어 있으면 추가 검증합니다.**
 
 Then navigation bar:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[0] back | [a] jwtParser.parse | [b] userRepo.findById | [c] auditLog.record | [q] quit
+[0] back | [a] userRepository.findByEmail | [b] passwordEncoder.matches | [c] mfaService.verify | [q] quit
 ```
 
 **IMPORTANT**:
 - Wrap source code in markdown code block with language (```java, ```python, ```typescript, etc.)
 - Show the ENTIRE function, not truncated
 - Mark ALL callable functions with [a], [b], [c], [d]... in order of appearance
+- If more than 26 options, continue with [aa], [ab], [ac]... (Excel-style)
 - Navigation bar shows [0] back first, then all drill options with function names, then [q] quit
 - Header and explanation MUST be **bold** (outside code blocks for rendering)
 - Write explanations in the USER'S LANGUAGE (Korean if user speaks Korean, etc.)
@@ -68,22 +87,45 @@ Then navigation bar:
 ```
 **src/auth/AuthService.java#L120**
 
-- Long separator line
+- Long separator line (━)
 - **Bold** file path with line number (clickable link format)
+
+### Minimap
+```
+  login() - 로그인 엔트리포인트
+  └─ authService.authenticate() ← 현재 위치
+     ├─[a] userRepository.findByEmail() - 이메일로 사용자 조회
+     ├─[b] passwordEncoder.matches() - 비밀번호 검증
+     └─[c] mfaService.verify() - MFA 검증
+```
+- Shows navigation path like a tree structure
+- Parent functions above (with descriptions)
+- Current position marked with `← 현재 위치`
+- Children (drillable functions) below with [a], [b], [c]... markers
+- Use FULL method call format: `authService.authenticate()` not just `authenticate()`
+- **Max 4 children shown** - if more, show `└─ ... +N more`
+- Separated from code block by thin line (─)
+
+### Minimap-Code Separator
+```
+──────────────────────────────────────────────────────────────────────
+```
+- Thin separator line (─) between minimap and code block
 
 ### Code Block
 ```java
-   119 │   public User validateToken(String token) {
-   120 │     TokenPayload payload = [a]jwtParser.parse(token);
-   121 │     User user = [b]userRepo.findById(payload.getUserId());
+   40 │   public User authenticate(Credentials credentials) {
+   41 │     User user = [a]userRepository.findByEmail(credentials.getEmail());
+   42 │     if (user == null) {
 ```
 - Show ENTIRE function
 - Line numbers
 - ALL callable functions marked with [a], [b], [c]...
+- If more than 26, use [aa], [ab], [ac]... (Excel-style)
 
 ### Explanation
 
-**JWT 토큰을 파싱하고 사용자를 조회합니다.**
+**사용자 인증 로직. 이메일로 사용자를 찾고 비밀번호를 검증합니다.**
 
 - **Bold** text (outside code block)
 - Brief 1-2 sentence explanation
@@ -92,10 +134,10 @@ Then navigation bar:
 ### Navigation Bar
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[0] back | [a] jwtParser.parse | [b] userRepo.findById | [q] quit
+[0] back | [a] userRepository.findByEmail | [b] passwordEncoder.matches | [c] mfaService.verify | [q] quit
 ```
 - [0] back - return to parent scope (disabled at root)
-- [a], [b], [c]... - drill into each function
+- [a], [b], [c]... or [aa], [ab]... - drill into each function
 - [q] quit - exit tour
 
 ## Interaction Handling
@@ -107,19 +149,27 @@ Then navigation bar:
 | `q` or `quit` | Exit the tour |
 | Natural language question | Answer within tour context |
 
-## Stack Management (Breadcrumb)
+## Stack Management (Minimap)
 
-Track drill-down path. Show breadcrumb when nested:
+Track drill-down path and display as minimap tree:
 
-**src/auth/JwtParser.java#L45**
 ```
->> AuthService.validateToken > jwtParser.parse
+  login() - 로그인 엔트리포인트
+  └─ authService.authenticate() - 사용자 인증
+     └─ mfaService.verify() ← 현재 위치
+        ├─[a] totpGenerator.generate() - 서버측 TOTP 생성
+        └─[b] auditLog.record() - 감사 로그 기록
 ```
 
-The breadcrumb shows the path from entry point to current location.
+The minimap shows:
+- Full path from entry point to current location
+- Parent functions with descriptions (already visited)
+- Current position marked with `← 현재 위치`
+- Children functions as drill options
 
 When user presses "0" (back):
 - Return to parent function in the stack
+- Update minimap to reflect new position
 - If at root (entry point), show message: "Already at root. Press [q] to quit."
 
 ## Finding Entry Points
@@ -241,6 +291,10 @@ When displaying a function, **pre-read all drillable functions** in advance:
 4. **Be concise** - Explanations should be 1-2 sentences max
 5. **Show entire function** - Don't truncate, show full function body
 6. **Mark ALL callables** - Every function call should be marked [a], [b], [c]...
-7. **Be accurate** - Actually read the code, don't guess
-8. **Maintain stack** - Remember the drill-down path for back navigation
-9. **Pre-read** - Pre-read drillable functions for fast navigation
+7. **Excel-style overflow** - If more than 26 options, use [aa], [ab], [ac]...
+8. **Be accurate** - Actually read the code, don't guess
+9. **Maintain stack** - Remember the drill-down path for back navigation
+10. **Pre-read** - Pre-read drillable functions for fast navigation
+11. **Minimap always** - Always show minimap with current position and path
+12. **Full method names** - Use `authService.authenticate()` not just `authenticate()`
+13. **Minimap limit** - Show max 4 children in minimap, rest as `... +N more`

@@ -45,21 +45,39 @@ This is NOT a step-by-step debugger. It's **tree navigation**:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/controllers/AuthController.java#L25**
+**src/service/AuthService.java#L42**
 
+```
+  login() - 로그인 엔트리포인트
+  └─ authService.authenticate() ← 현재 위치
+     ├─[a] userRepository.findByEmail() - 이메일로 사용자 조회
+     ├─[b] passwordEncoder.matches() - 비밀번호 검증
+     └─[c] mfaService.verify() - MFA 검증
+```
+```
+──────────────────────────────────────────────────────────────────────
+```
 ```java
-   23 │ @PostMapping("/login")
-   24 │ public Response login(@RequestBody Creds creds) {
-   25 │   User user = [a]authService.authenticate(creds);
-   26 │   return [b]tokenService.generate(user);
-   27 │ }
+   40 │   public User authenticate(Credentials credentials) {
+   41 │     User user = [a]userRepository.findByEmail(credentials.getEmail());
+   42 │     if (user == null) {
+   43 │       throw new AuthException("User not found");
+   44 │     }
+   45 │     if (![b]passwordEncoder.matches(credentials.getPassword(), user.getHash())) {
+   46 │       throw new AuthException("Invalid password");
+   47 │     }
+   48 │     if (user.isMfaEnabled()) {
+   49 │       [c]mfaService.verify(user, credentials.getMfaCode());
+   50 │     }
+   51 │     return user;
+   52 │   }
 ```
 
-**Entry point for login. Authenticates user and generates JWT token.**
+**사용자 인증 로직. 이메일로 사용자를 찾고, 비밀번호 검증 후 MFA가 활성화되어 있으면 추가 검증합니다.**
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[0] back | [a] authService.authenticate | [b] tokenService.generate | [q] quit
+[0] back | [a] userRepository.findByEmail | [b] passwordEncoder.matches | [c] mfaService.verify | [q] quit
 ```
 
 ## Integration with Other Skills
@@ -93,11 +111,15 @@ The error originates here. Want to explore the call stack?
 ## Key Behaviors
 
 1. **Start from entry point** - Find the logical starting point for the feature
-2. **Show entire function** - Don't truncate, show full function body
-3. **Mark ALL callables** - Every function call should be marked [a], [b], [c]...
-4. **Handle branches** - Show all branches as drill options
-5. **Maintain stack** - Track drill-down path for back navigation
-6. **Answer questions** - Respond to natural language queries in context
-7. **Pre-read** - Pre-read drillable functions for fast navigation
-8. **User's language** - Write explanations in user's language
-9. **No emojis** - Keep output clean and professional
+2. **Show minimap** - Always display tree showing current position and path
+3. **Show entire function** - Don't truncate, show full function body
+4. **Mark ALL callables** - Every function call should be marked [a], [b], [c]...
+5. **Excel-style overflow** - If more than 26 options, use [aa], [ab], [ac]...
+6. **Minimap limit** - Show max 4 children in minimap, rest as `... +N more`
+7. **Full method names** - Use `authService.authenticate()` not just `authenticate()`
+8. **Handle branches** - Show all branches as drill options
+9. **Maintain stack** - Track drill-down path for back navigation
+10. **Answer questions** - Respond to natural language queries in context
+11. **Pre-read** - Pre-read drillable functions for fast navigation
+12. **User's language** - Write explanations in user's language
+13. **No emojis** - Keep output clean and professional

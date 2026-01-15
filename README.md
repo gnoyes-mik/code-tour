@@ -11,22 +11,36 @@ Code Tour is a Claude Code plugin that lets you explore code by drilling into fu
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**src/auth/AuthService.java#L120**
+**src/service/AuthService.java#L42**
 
+```
+  login() - Login entry point
+  └─ authService.authenticate() ← current
+     ├─[a] userRepository.findByEmail() - Find user by email
+     ├─[b] passwordEncoder.matches() - Validate password
+     └─[c] mfaService.verify() - MFA verification
+```
+```
+──────────────────────────────────────────────────────────────────────
+```
 ```java
-   119 │   public User validateToken(String token) {
-   120 │     TokenPayload payload = [a]jwtParser.parse(token);
-   121 │     User user = [b]userRepo.findById(payload.getUserId());
-   122 │     [c]auditLog.record(user, "validated");
-   123 │     return user;
-   124 │   }
+   40 │   public User authenticate(Credentials credentials) {
+   41 │     User user = [a]userRepository.findByEmail(credentials.getEmail());
+   42 │     if (![b]passwordEncoder.matches(credentials.getPassword(), user.getHash())) {
+   43 │       throw new AuthException("Invalid password");
+   44 │     }
+   45 │     if (user.isMfaEnabled()) {
+   46 │       [c]mfaService.verify(user, credentials.getMfaCode());
+   47 │     }
+   48 │     return user;
+   49 │   }
 ```
 
-**Parses JWT token, retrieves user, and records audit log.**
+**Authenticates user by email, validates password, and performs MFA if enabled.**
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[0] back | [a] jwtParser.parse | [b] userRepo.findById | [c] auditLog.record | [q] quit
+[0] back | [a] userRepository.findByEmail | [b] passwordEncoder.matches | [c] mfaService.verify | [q] quit
 ```
 
 ## Installation
@@ -55,17 +69,25 @@ Explain how authentication works
 
 ## Features
 
+### Minimap Navigation
+See where you are in the code flow:
+- Shows parent path from entry point
+- Current position marked with `←`
+- Children functions as drill options
+- Max 4 children shown, rest collapsed
+
 ### Tree Navigation
 Explore code like navigating a tree:
 - `[a]`, `[b]`, `[c]`... - Drill into marked functions
 - `[0]` - Go back to parent scope
 - `[q]` - Quit tour
+- More than 26 options? Uses `[aa]`, `[ab]`, `[ac]`... (Excel-style)
 
 ### Drill Down
 Dive into function calls:
 - ALL callable functions are marked with `[a]`, `[b]`, `[c]`...
 - Type the letter to see that function's implementation
-- Breadcrumb shows your current path
+- Minimap always shows your current path
 
 ### Natural Language Queries
 Ask questions during the tour:

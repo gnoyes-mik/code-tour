@@ -37,7 +37,7 @@ Then continue with:
 
   [a] jwtParser.parse()    [b] userRepo.findById()
  ──────────────────────────────────────────────────
-  1:prev  2:next  3:drill  4:quit
+  1 prev | 2 next | 3 drill | 4 quit
 ```
 
 **IMPORTANT**:
@@ -88,7 +88,7 @@ Then continue with:
 ### Navigation Bar
 ```
  ──────────────────────────────────────────────────
-  1:prev  2:next  3:drill  4:quit
+  1 prev | 2 next | 3 drill | 4 quit
 ```
 - Thin separator line above
 - Simple numbered controls

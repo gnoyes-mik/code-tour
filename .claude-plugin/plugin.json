@@ -1,0 +1,16 @@
+{
+  "name": "code-tour",
+  "description": "Interactive code explorer - navigate your codebase like a debugger",
+  "version": "1.0.0",
+  "author": {
+    "name": "gnoyes"
+  },
+  "keywords": [
+    "code",
+    "tour",
+    "debugger",
+    "navigation",
+    "explorer"
+  ],
+  "repository": "https://github.com/gnoyes/code-tour"
+}

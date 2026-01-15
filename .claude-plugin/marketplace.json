@@ -1,0 +1,14 @@
+{
+  "name": "code-tour-marketplace",
+  "owner": {
+    "name": "gnoyes"
+  },
+  "plugins": [
+    {
+      "name": "code-tour",
+      "source": "..",
+      "description": "Interactive code explorer - navigate your codebase like a debugger",
+      "version": "1.0.0"
+    }
+  ]
+}

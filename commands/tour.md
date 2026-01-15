@@ -17,7 +17,7 @@ ALWAYS use this exact format with horizontal line separators:
 
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ◀ 2/5 ▶   AuthService.java:120  🔗
+  [2/5] src/auth/AuthService.java#L120
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -26,14 +26,14 @@ Then show the code in a MARKDOWN CODE BLOCK with the appropriate language:
 ```java
    118 │
    119 │   public User validateToken(String t) {
- ▶ 120 │     TokenPayload p = [a]jwtParser.parse();   // ← drill marker
+ > 120 │     TokenPayload p = [a]jwtParser.parse();
    121 │     return [b]userRepo.findById(p.getId());
    122 │   }
 ```
 
 Then continue with:
 ```
-  💬 Parses JWT token and retrieves user from DB.
+  JWT 토큰을 파싱하고 사용자를 조회합니다.
 
   [a] jwtParser.parse()    [b] userRepo.findById()
  ──────────────────────────────────────────────────
@@ -45,59 +45,39 @@ Then continue with:
 - This enables syntax highlighting in the terminal
 - Keep [a], [b] markers inline as comments or after the line
 - Light reformatting OK for readability, but minimize line breaks
+- Write explanations in the USER'S LANGUAGE (Korean if user speaks Korean, etc.)
+- File links MUST use `#L` format: `src/File.java#L120` (clickable in IDE)
+- Do NOT use emojis
 - Do NOT add any usage instructions below
 - Just show the display and wait for user input
-
-## Color Scheme (ANSI)
-
-Apply these colors when outputting:
-
-| Element | Color | ANSI Code |
-|---------|-------|-----------|
-| Box border | Dim/Gray | `\033[90m` |
-| Step counter (2/5) | Cyan Bold | `\033[1;36m` |
-| File:line | Blue Underline | `\033[4;34m` |
-| Line numbers | Dim Gray | `\033[90m` |
-| Current line marker ▶ | Yellow Bold | `\033[1;33m` |
-| Drill markers [a][b][c] | Magenta Bold | `\033[1;35m` |
-| Explanation 💬 | White | `\033[37m` |
-| Navigation hints | Dim Gray | `\033[90m` |
-| Keywords (public, return, if) | Blue | `\033[34m` |
-| Strings | Green | `\033[32m` |
-| Comments | Gray Italic | `\033[3;90m` |
-
-Reset with `\033[0m` after each colored segment.
 
 ## Display Elements
 
 ### Header
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ◀ 2/5 ▶   AuthService.java:120  🔗
+  [2/5] src/auth/AuthService.java#L120
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-- `◀ ▶` step indicator (visual only)
-- Step counter in cyan bold
-- File:line as clickable link
-- 🔗 indicates IDE link available
+- Step counter [current/total]
+- File path with #L line number (clickable link format)
 
 ### Code Block
 ```
    118 │
    119 │   public User validateToken(String t) {
- ▶ 120 │     TokenPayload p = [a]jwtParser.parse();
+ > 120 │     TokenPayload p = [a]jwtParser.parse();
 ```
 - Line numbers in gray
-- Current line marked with yellow `▶`
+- Current line marked with `>`
 - Callable functions marked with `[a]`, `[b]`, `[c]`
-- No right border - variable length OK
 
 ### Explanation
 ```
-  💬 Parses JWT token and retrieves user from DB.
+  JWT 토큰을 파싱하고 사용자를 조회합니다.
 ```
 - Brief 1-2 sentence explanation
-- 💬 prefix for visual clarity
+- In user's language
 
 ### Drill Options
 ```
@@ -129,14 +109,14 @@ Listen for these inputs and respond accordingly:
 ## Finding Entry Points
 
 ### If target is provided:
-- If it looks like `file:line` → Start from that location
+- If it looks like `file:line` or `file#L` → Start from that location
 - If it looks like a function name → Search and start from that function
 - If it's a feature description → Search codebase for likely entry point
 
 ### If no target provided:
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🗺️  Code Tour
+  Code Tour
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   What would you like to explore?
@@ -149,7 +129,7 @@ Listen for these inputs and respond accordingly:
 ### If entry point not found:
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ⚠️  Could not find "{query}"
+  Could not find "{query}"
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Did you mean one of these?
@@ -164,11 +144,11 @@ Listen for these inputs and respond accordingly:
 Track drill-down depth internally. Show breadcrumb in header when nested:
 
 ```
-  ◀ 1/3 ▶   JwtParser.java:45  🔗
-  📍 AuthService.validateToken → jwtParser.parse
+  [1/3] src/auth/JwtParser.java#L45
+  >> AuthService.validateToken > jwtParser.parse
 ```
 
-When user presses "prev":
+When user presses "1" (prev):
 - If at depth > 0 and at first step of current drill-down → Return to parent scope
 - Otherwise → Go to previous step in current scope
 
@@ -177,7 +157,7 @@ When user presses "prev":
 ### External Library Function
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  📦 External Library
+  External Library
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   BCrypt.hash() is from external library.
@@ -189,10 +169,10 @@ When user presses "prev":
 ### Circular Reference
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🔄 Circular Reference Detected
+  Circular Reference Detected
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  A → B → C → A
+  A > B > C > A
 
   [a] Stop here
   [b] Follow one more cycle
@@ -201,16 +181,18 @@ When user presses "prev":
 ### Branch Point (if/else, switch)
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ◀ 3/5 ▶   UserController.java:45  🔗
+  [3/5] src/UserController.java#L45
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+```
+```java
    45 │   if (user.isAdmin()) {
    46 │     [a] return adminDashboard();
    47 │   } else {
    48 │     [b] return userDashboard();
    49 │   }
-
-  🔀 Branch point - which path to follow?
+```
+```
+  Branch point - which path to follow?
 
   [a] admin path    [b] user path    [c] show both
 ```
@@ -224,28 +206,29 @@ Users can ask questions at any point:
 - "What happens if this fails?" → Explain error handling path
 - "Show me the test for this" → Navigate to related test file
 
-Answer in context, then redisplay the current tour step.
+Answer in context (in user's language), then redisplay the current tour step.
 
 ## Exit Behavior
 
 When user quits:
 ```
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  👋 Tour Complete
+  Tour Complete
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  📊 Visited 5 steps across 3 files
-  📂 Deepest drill-down: 2 levels
+  Visited 5 steps across 3 files
+  Deepest drill-down: 2 levels
 
-  💡 Resume: /tour AuthService.java:120
+  Resume: /tour src/auth/AuthService.java#L120
 ```
 
 ## Important Guidelines
 
-1. **Use ANSI colors** - Make the output visually appealing
-2. **Be concise** - Explanations should be 1-2 sentences max
-3. **Stay focused** - Only show relevant code, not entire files
-4. **Be accurate** - Actually read the code, don't guess
-5. **Be responsive** - Handle any input gracefully
-6. **Maintain context** - Remember the tour history within the conversation
-7. **Syntax highlight** - Apply colors to code keywords, strings, comments
+1. **No emojis** - Keep output clean and professional
+2. **User's language** - Write explanations in user's language
+3. **Clickable links** - Use `file#L123` format for IDE integration
+4. **Be concise** - Explanations should be 1-2 sentences max
+5. **Stay focused** - Only show relevant code, not entire files
+6. **Be accurate** - Actually read the code, don't guess
+7. **Be responsive** - Handle any input gracefully
+8. **Maintain context** - Remember the tour history within the conversation

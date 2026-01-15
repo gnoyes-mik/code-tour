@@ -225,13 +225,23 @@ When user quits:
   Resume: /tour src/auth/AuthService.java#L120
 ```
 
+## Performance Optimization
+
+When displaying a tour step, **pre-read the next and previous steps** in advance:
+- Read the next function/file that will be shown when user presses "2"
+- Read the previous function/file that will be shown when user presses "1"
+- This allows instant response when user navigates
+
+This way, when user presses a navigation key, you can show the result immediately without delay.
+
 ## Important Guidelines
 
 1. **No emojis** - Keep output clean and professional
 2. **User's language** - Write explanations in user's language
 3. **Clickable links** - Use `file#L123` format for IDE integration
 4. **Be concise** - Explanations should be 1-2 sentences max
-5. **Stay focused** - Only show relevant code, not entire files
+5. **Show entire function** - Don't truncate, show full function body
 6. **Be accurate** - Actually read the code, don't guess
 7. **Be responsive** - Handle any input gracefully
 8. **Maintain context** - Remember the tour history within the conversation
+9. **Pre-read** - Always pre-read next/prev steps for fast navigation

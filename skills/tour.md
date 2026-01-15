@@ -1,5 +1,5 @@
 ---
-name: code-tour
+name: tour
 description: Use when user wants to explore code flow interactively. Triggers on phrases like "show me the flow", "code tour", "walk me through", "explain the code", "코드 투어", "흐름 보여줘", "흐름 알려줘", "코드 설명해줘"
 ---
 

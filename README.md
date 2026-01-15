@@ -1,31 +1,32 @@
 # Code Tour
 
-Interactive code explorer - navigate your codebase like a debugger.
+Interactive code explorer - navigate your codebase by drilling into functions.
 
 [한국어](./README.ko.md)
 
 ## What is Code Tour?
 
-Code Tour is a Claude Code plugin that lets you step through code execution flow interactively. Instead of jumping between files manually, let Claude guide you through the code path step-by-step.
+Code Tour is a Claude Code plugin that lets you explore code by drilling into function calls, like navigating a tree structure. Instead of stepping through lines, you dive into functions to understand the code flow.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-**[2/5] src/auth/AuthService.java#L120**
+**src/auth/AuthService.java#L120**
 
 ```java
    119 │   public User validateToken(String token) {
- > 120 │     TokenPayload payload = [a]jwtParser.parse(token);
-   121 │     return [b]userRepo.findById(payload.getUserId());
-   122 │   }
+   120 │     TokenPayload payload = [a]jwtParser.parse(token);
+   121 │     User user = [b]userRepo.findById(payload.getUserId());
+   122 │     [c]auditLog.record(user, "validated");
+   123 │     return user;
+   124 │   }
 ```
 
-**Parses JWT token and retrieves user from DB.**
+**Parses JWT token, retrieves user, and records audit log.**
 
 ```
-  [a] jwtParser.parse()    [b] userRepo.findById()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  1 prev | 2 next | 3 drill | 4 quit
+[0] back | [a] jwtParser.parse | [b] userRepo.findById | [c] auditLog.record | [q] quit
 ```
 
 ## Installation
@@ -54,18 +55,17 @@ Explain how authentication works
 
 ## Features
 
-### Step-by-Step Navigation
-Move through code flow with simple commands:
-- `1` - Previous step
-- `2` - Next step
-- `3` - Drill down into a function
-- `4` - Quit tour
+### Tree Navigation
+Explore code like navigating a tree:
+- `[a]`, `[b]`, `[c]`... - Drill into marked functions
+- `[0]` - Go back to parent scope
+- `[q]` - Quit tour
 
 ### Drill Down
 Dive into function calls:
-- Functions are marked with `[a]`, `[b]`, etc.
-- Type the letter or function name to drill in
-- Press `1` at drill depth to return to parent scope
+- ALL callable functions are marked with `[a]`, `[b]`, `[c]`...
+- Type the letter to see that function's implementation
+- Breadcrumb shows your current path
 
 ### Natural Language Queries
 Ask questions during the tour:
@@ -77,8 +77,8 @@ Ask questions during the tour:
 Click on `file#L123` links to open in your connected IDE.
 
 ### Smart Handling
-- **Branch points**: Choose which path to follow at if/switch
-- **External libraries**: Option to view docs or skip
+- **Branch points**: All branches shown as drill options
+- **External libraries**: Option to view docs or go back
 - **Circular references**: Detection and warning
 - **Entire function**: Shows full function body, not truncated
 
@@ -106,6 +106,14 @@ The skill activates on these phrases:
 |---------|-------------|
 | `/tour <target>` | Start tour from target (file#L, function, or feature) |
 | `/tour` | Interactive prompt to choose starting point |
+
+## Navigation
+
+| Input | Action |
+|-------|--------|
+| `0` | Go back to parent function |
+| `a`, `b`, `c`... | Drill into that function |
+| `q` | Quit tour |
 
 ## Contributing
 

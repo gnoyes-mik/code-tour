@@ -5,7 +5,7 @@ description: Use when user wants to explore code flow interactively. Triggers on
 
 # Code Tour Skill
 
-This skill provides interactive code exploration, like stepping through a debugger.
+This skill provides interactive code exploration by drilling into function calls, like navigating a tree structure.
 
 ## When to Use
 
@@ -33,6 +33,35 @@ Use the `/tour` command from the code-tour plugin:
 
 Or invoke the tour behavior directly following the tour.md command specification.
 
+## Core Concept
+
+This is NOT a step-by-step debugger. It's **tree navigation**:
+- Show a function with callable functions marked as [a], [b], [c]...
+- User drills into a function to see its implementation
+- User can go back to parent scope with [0]
+
+## Display Format
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+**src/controllers/AuthController.java#L25**
+
+```java
+   23 │ @PostMapping("/login")
+   24 │ public Response login(@RequestBody Creds creds) {
+   25 │   User user = [a]authService.authenticate(creds);
+   26 │   return [b]tokenService.generate(user);
+   27 │ }
+```
+
+**Entry point for login. Authenticates user and generates JWT token.**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[0] back | [a] authService.authenticate | [b] tokenService.generate | [q] quit
+```
+
 ## Integration with Other Skills
 
 ### After Implementation
@@ -41,7 +70,7 @@ When completing a feature implementation, offer a code tour:
 ```
 Implementation complete! Would you like a code tour of what was built?
 
-[a] Yes, show me the flow
+[a] Yes, show me the code
 [b] No, I'm good
 ```
 
@@ -51,50 +80,24 @@ If yes, start tour from the main entry point of the implemented feature.
 When reviewing code, offer to tour through changes:
 
 ```
-I see changes in 5 files. Want to tour through the execution flow?
+I see changes in 5 files. Want to explore the code?
 ```
 
 ### During Debugging
 When helping debug, offer to tour through the problematic path:
 
 ```
-The error originates here. Want to tour through the call stack?
-```
-
-## Display Format
-
-Follow the exact format specified in the tour.md command:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-**[1/4] src/controllers/AuthController.java#L25**
-
-```java
-   23 │ @PostMapping("/login")
-   24 │ public Response login(@RequestBody Creds creds) {
- > 25 │   User user = [a]authService.authenticate(creds);
-   26 │   return [b]tokenService.generate(user);
-   27 │ }
-```
-
-**Entry point for login. Authenticates user and generates JWT token.**
-
-```
-  [a] authService.authenticate()    [b] tokenService.generate()
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  1 prev | 2 next | 3 drill | 4 quit
+The error originates here. Want to explore the call stack?
 ```
 
 ## Key Behaviors
 
 1. **Start from entry point** - Find the logical starting point for the feature
-2. **Follow execution flow** - Step through code as it would execute
-3. **Show entire function** - Don't truncate, show full function body
-4. **Mark callable functions** - Use [a], [b] etc. for drill-down options
-5. **Handle branches** - Let user choose path at if/switch statements
-6. **Track depth** - Manage drill-down stack properly
-7. **Answer questions** - Respond to natural language queries in context
-8. **Pre-read** - Pre-read next/prev steps for fast navigation
-9. **User's language** - Write explanations in user's language
-10. **No emojis** - Keep output clean and professional
+2. **Show entire function** - Don't truncate, show full function body
+3. **Mark ALL callables** - Every function call should be marked [a], [b], [c]...
+4. **Handle branches** - Show all branches as drill options
+5. **Maintain stack** - Track drill-down path for back navigation
+6. **Answer questions** - Respond to natural language queries in context
+7. **Pre-read** - Pre-read drillable functions for fast navigation
+8. **User's language** - Write explanations in user's language
+9. **No emojis** - Keep output clean and professional
